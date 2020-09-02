@@ -4,9 +4,6 @@ using namespace myos::common;
 using namespace myos::drivers;
 using namespace myos::hardwarecommunication;
 
-
-
-
 PeripheralComponentInterconnectDeviceDescriptor::PeripheralComponentInterconnectDeviceDescriptor()
 {
 }
@@ -14,12 +11,6 @@ PeripheralComponentInterconnectDeviceDescriptor::PeripheralComponentInterconnect
 PeripheralComponentInterconnectDeviceDescriptor::~PeripheralComponentInterconnectDeviceDescriptor()
 {
 }
-
-
-
-
-
-
 
 PeripheralComponentInterconnectController::PeripheralComponentInterconnectController()
 : dataPort(0xCFC),
@@ -84,7 +75,7 @@ void PeripheralComponentInterconnectController::SelectDrivers(DriverManager* dri
                 {
                     BaseAddressRegister bar = GetBaseAddressRegister(bus, device, function, barNum);
                     if(bar.address && (bar.type == InputOutput))
-                        dev.portBase = (uint32_t)bar.address;                
+                        dev.portBase = (uint32_t)bar.address;
                 }
 
                 Driver* driver = GetDriver(dev, interrupts);
@@ -160,14 +151,16 @@ Driver* PeripheralComponentInterconnectController::GetDriver(PeripheralComponent
         case 0x1022: // AMD
             switch(dev.device_id)
             {
-                case 0x2000: // am79c973
-                /*
-                driver = (amd_am79c973*)MemoryManager::activeMemoryManager->malloc(sizeof(amd_am79c973));
-                if(driver != 0)
-                    new (driver) amd_am79c973(...);
-                */
-                    printf("AMD am79c973 ");
-                    break;
+              case 0x2000: // am79c973
+                  printf("AMD am79c973 ");
+                  driver = (amd_am79c973*)MemoryManager::activeMemoryManager->malloc(sizeof(amd_am79c973));
+                  if(driver != 0)
+                      new (driver) amd_am79c973(&dev, interrupts);
+                  printf("AMD am79c973 ");
+                  else
+                      printf("instantiation failed");
+                  return driver;
+                  break;
             }
             break;
 
